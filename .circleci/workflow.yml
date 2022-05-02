@@ -47,13 +47,25 @@ jobs:
 workflows:
   database-deploy-workflow:
     jobs:
-      - clean
+      - clean:
           context: Database
+          filters:
+            branches:
+              only:
+              - /main
       - build:
           requires:
             - clean
           context: Database
+          filters:
+            branches:
+              only:
+              - /main
       - deploy:
           requires:
             - build
           context: Database
+          filters:
+            branches:
+              only:
+              - /main
