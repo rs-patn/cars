@@ -17,23 +17,23 @@ parameters:
   #   default: "./cars/migrations"
  
 jobs:
-  clean:
-    docker:
-      - image: flyway/flyway:latest-alpine
-    steps:
-      - checkout
-      - run:
-          name: "Clean Build Database"
-          command: flyway clean -url="<< pipeline.parameters.ciJDBC >>" -user=$USERNAME_LOCAL -password=$PASSWORD_LOCAL -locations=filesystem:<< pipeline.parameters.update-migrations >> -$EDITION
+  # clean:
+  #   docker:
+  #     - image: flyway/flyway:latest-alpine
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: "Clean Build Database"
+  #         command: flyway clean -url="<< pipeline.parameters.ciJDBC >>" -user=$USERNAME_LOCAL -password=$PASSWORD_LOCAL -locations=filesystem:<< pipeline.parameters.update-migrations >> -$EDITION
  
-  build:
-    docker:
-      - image: flyway/flyway:latest-alpine
-    steps:
-      - checkout
-      - run:
-          name: "Migrate to Build Database"
-          command: flyway migrate -url="<< pipeline.parameters.ciJDBC >>" -user=$USERNAME_LOCAL -password=$PASSWORD_LOCAL -locations=filesystem:<< pipeline.parameters.update-migrations >> -$EDITION
+  # build:
+  #   docker:
+  #     - image: flyway/flyway:latest-alpine
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: "Migrate to Build Database"
+  #         command: flyway migrate -url="<< pipeline.parameters.ciJDBC >>" -user=$USERNAME_LOCAL -password=$PASSWORD_LOCAL -locations=filesystem:<< pipeline.parameters.update-migrations >> -$EDITION
  
   deploy:
     docker:
@@ -47,23 +47,23 @@ jobs:
 workflows:
   database-deploy-workflow:
     jobs:
-      - clean:
-          context: Database
-          # filters:
-          #   branches:
-          #     only:
-          #     - /main
-      - build:
-          requires:
-            - clean
-          context: Database
-          # filters:
-          #   branches:
-          #     only:
-          #     - /main
+      # - clean:
+      #     context: Database
+      #     # filters:
+      #     #   branches:
+      #     #     only:
+      #     #     - /main
+      # - build:
+      #     requires:
+      #       - clean
+      #     context: Database
+      #     # filters:
+      #     #   branches:
+      #     #     only:
+      #     #     - /main
       - deploy:
-          requires:
-            - build
+          # requires:
+          #   - build
           context: Database
           # filters:
           #   branches:
