@@ -12,9 +12,9 @@ parameters:
   prodJDBC:
     type: string
     default: "jdbc:sqlserver://pn-sql-test.database.windows.net:1433;database=cars"
-  # migrationPath:
-  #   type: string
-  #   default: "./cars/migrations"
+  migrationPath:
+    type: string
+    default: "./cars/migrations"
  
 jobs:
   # clean:
