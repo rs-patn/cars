@@ -18,13 +18,13 @@ parameters:
  
 jobs:
   clean:
-      docker:
-        - image: flyway/flyway:latest-alpine
-      steps:
-        - checkout
-        - run:
-            name: "Clean Build Database"
-            command: flyway clean -url="<< pipeline.parameters.ciJDBC >>" -user=$USERNAME_LOCAL -password=$PASSWORD_LOCAL -locations=filesystem:<< pipeline.parameters.update-migrations >> -$EDITION
+    docker:
+      - image: flyway/flyway:latest-alpine
+    steps:
+      - checkout
+      - run:
+          name: "Clean Build Database"
+          command: flyway clean -url="<< pipeline.parameters.ciJDBC >>" -user=$USERNAME_LOCAL -password=$PASSWORD_LOCAL -locations=filesystem:<< pipeline.parameters.update-migrations >> -$EDITION
  
   build:
     docker:
@@ -49,23 +49,23 @@ workflows:
     jobs:
       - clean:
           context: Database
-          filters:
-            branches:
-              only:
-              - /main
+          # filters:
+          #   branches:
+          #     only:
+          #     - /main
       - build:
           requires:
             - clean
           context: Database
-          filters:
-            branches:
-              only:
-              - /main
+          # filters:
+          #   branches:
+          #     only:
+          #     - /main
       - deploy:
           requires:
             - build
           context: Database
-          filters:
-            branches:
-              only:
-              - /main
+          # filters:
+          #   branches:
+          #     only:
+          #     - /main
