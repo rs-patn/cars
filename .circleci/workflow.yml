@@ -1,0 +1,59 @@
+version: 2.1
+parameters:
+  update-migrations:
+    type: boolean
+    default: false
+  update-schema-model:
+    type: boolean
+    default: false
+  ciJDBC:
+    type: string
+    default: "jdbc:sqlserver://AAD-28S9ZD3.database.windows.net:1433;database=cars"
+  prodJDBC:
+    type: string
+    default: "jdbc:sqlserver://pn-sql-test.database.windows.net:1433;database=cars"
+  # migrationPath:
+  #   type: string
+  #   default: "./cars/migrations"
+ 
+jobs:
+  clean:
+      docker:
+        - image: flyway/flyway:latest-alpine
+      steps:
+        - checkout
+        - run:
+            name: "Clean Build Database"
+            command: flyway clean -url="<< pipeline.parameters.ciJDBC >>" -user=$USERNAME_LOCAL -password=$PASSWORD_LOCAL -locations=filesystem:<< pipeline.parameters.update-migrations >> -$EDITION
+ 
+  build:
+    docker:
+      - image: flyway/flyway:latest-alpine
+    steps:
+      - checkout
+      - run:
+          name: "Migrate to Build Database"
+          command: flyway migrate -url="<< pipeline.parameters.ciJDBC >>" -user=$USERNAME_LOCAL -password=$PASSWORD_LOCAL -locations=filesystem:<< pipeline.parameters.update-migrations >> -$EDITION
+ 
+  deploy:
+    docker:
+      - image: flyway/flyway:latest-alpine
+    steps:
+      - checkout
+      - run:
+          name: "Deploy to Prod"
+          command: flyway migrate -url="<< pipeline.parameters.prodJDBC >>" -user=$USERNAME_LOCAL -password=$PASSWORD_LOCAL -locations=filesystem:<< pipeline.parameters.update-migrations >> -baselineOnMigrate=true -baselineVersion=1.0.0.20220427175328 -$EDITION
+ 
+workflows:
+  database-deploy-workflow:
+    jobs:
+      - clean
+          context: Database
+      - build:
+          requires:
+            - clean
+          context: Database
+      - deploy:
+          requires:
+            - build
+          context: Database
