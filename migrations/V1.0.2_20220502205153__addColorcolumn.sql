@@ -8,4 +8,4 @@ ALTER TABLE [dbo].[cars] ADD
 [color] [varchar] (25) NULL
 GO
 
--- test
+-- test comment
