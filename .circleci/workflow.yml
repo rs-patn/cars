@@ -42,7 +42,7 @@ jobs:
       - checkout
       - run:
           name: "Deploy to Prod"
-          command: flyway migrate -url="<< pipeline.parameters.prodJDBC >>" -user=$USERNAME_TARGET -password=$PASSWORD_TARGET -locations=filesystem:<< pipeline.parameters.update-migrations >> -baselineOnMigrate=true -baselineVersion=1.0.0.20220427175328 -$EDITION
+          command: flyway migrate -url="<< pipeline.parameters.prodJDBC >>" -user=$USERNAME_TARGET -password=$PASSWORD_TARGET -locations=filesystem:<< pipeline.parameters.migrationPath >> -baselineOnMigrate=true -baselineVersion=1.0.0.20220427175328 -$EDITION
  
 workflows:
   database-deploy-workflow:
